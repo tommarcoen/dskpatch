@@ -11,4 +11,4 @@ Norton's dskpatch program
  ## Chapters
  
  Norton starts writing DSKPATCH.COM in chapter 9 (p. 99).
- Chapters 9 and 10 introduce the first procedures in VIDEO_IO.ASM but the real programming only starts in chapter 12.
+ Chapters 9 and 10 introduce the first procedures in VIDEO_IO.ASM but the real programming only starts in chapter 14 with chapter 12 explaining the program in a bit more detail.
