@@ -8,6 +8,41 @@ TEST_WRITE_HEX	PROC	NEAR
 	INT	20h			;Return to DOS
 TEST_WRITE_HEX	ENDP
 
+	PUBLIC	WRITE_DECIMAL
+;-----------------------------------------------------------------------;
+; This procedure writes a 16-bit, unsigned number in decimal notation.  ;
+;                                                                       ;
+;       DX      N : 16-bit, unsigned number.                            ;
+;                                                                       ;
+; Uses:         WRITE_HEX_DIGIT                                         ;
+;-----------------------------------------------------------------------;
+WRITE_DECIMAL	PROC	NEAR
+	PUSH	AX			;Save registers used here
+	PUSH	CX
+	PUSH	DX
+	PUSH	SI
+	MOV	AX,DX
+	MOV	SI,10			;Will divide by 10 using SI
+	XOR	CX,CX			;Count of digits placed on stack
+NON_ZERO:
+	XOR	DX,DX			;Set upper word of N to 0
+	DIV	SI			;Calculate N/10 and (N mod 10)
+	PUSH	DX			;Push one digit onto the stack
+	INC	CX			;One more digit added
+	OR	AX,AX			;N = 0 yet?
+	JNE	NON_ZERO		;Nope, continue
+WRITE_DIGIT_LOOP:
+	POP	DX			;Get the digits in reverse order
+	CALL	WRITE_HEX_DIGIT
+	LOOP	WRITE_DIGIT_LOOP
+END_DECIMAL:
+	POP	SI
+	POP	DX
+	POP	CX
+	POP	AX
+	RET
+WRITE_DECIMAL	ENDP
+
 	PUBLIC	WRITE_HEX
 ;-----------------------------------------------------------------------;
 ; This procedure converts the byte in the DL register to hex and writes ;
