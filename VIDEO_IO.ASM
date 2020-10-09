@@ -101,15 +101,22 @@ WRITE_HEX_DIGIT	ENDP
 	PUBLIC	WRITE_CHAR
 ;-----------------------------------------------------------------------;
 ; This procedure prints a character on the screen using the DOS         ;
-; function call.                                                        ;
+; function call.  WRITE_CHAR replaces the characters 0 through 1Fh with ;
+; a period.                                                             ;
 ;                                                                       ;
 ;       DL      Byte to print on screen.                                ;
 ;-----------------------------------------------------------------------;
 WRITE_CHAR	PROC	NEAR
 	PUSH	AX
+	PUSH	DX
+	CMP	DL,32			;Is character before a space?
+	JAE	IS_PRINTABLE		;No, then print as is
+	MOV	DL,'.'			;Yes, replace with a period
+IS_PRINTABLE:
 	MOV	AH,2			;Call for character output
 	INT	21h			;Output character in DL register
-	POP	AX			;Restore old value in AX
+	POP	DX			;Restore old value in AX and DX
+	POP	AX
 	RET				;And return
 WRITE_CHAR	ENDP
 
