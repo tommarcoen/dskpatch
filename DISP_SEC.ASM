@@ -20,6 +20,17 @@ HEX_LOOP:
 	CALL	WRITE_CHAR
 	INC	BX
 	LOOP	HEX_LOOP
+	
+	MOV	DL,' '			;Add another space before characters
+	CALL	WRITE_CHAR
+	MOV	CX,16
+	XOR	BX,BX			;Set BX back to 0
+ASCII_LOOP:
+	MOV	DL,SECTOR[BX]
+	CALL	WRITE_CHAR
+	INC	BX
+	LOOP	ASCII_LOOP
+	
 	INT	20h			;Return to DOS
 DISP_LINE	ENDP
 
