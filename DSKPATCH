@@ -1,0 +1,12 @@
+disp_sec.obj:	disp_sec.asm
+	masm disp_sec;
+
+video_io.obj:	video_io.asm
+	mask video_io;
+
+cursor.obj:	cursor.asm
+	masm cursor;
+
+disp_sec.com: disp_sec.obj video_io.obj cursor.obj
+	link disp_sec video_io cursor;
+	exe2bin disp_sec disp_sec.com
