@@ -3,6 +3,7 @@ Norton's dskpatch program
 
 ## Requirements
 
+  - MAKE (introduced in chapter 15)
   - MASM
   - LINK.EXE
   - EXE2BIN.EXE
