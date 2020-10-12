@@ -9,17 +9,22 @@ CODE_SEG	SEGMENT	PUBLIC
 ;-----------------------------------------------------------------------;
 ; This procedure displays half a sector (256 bytes)                     ;
 ;                                                                       ;
+;       DS:DX   Offset into sector, in bytes -- should be multiple of 16;
+;                                                                       ;
 ; Uses:         DISP_LINE, SEND_CRLF                                    ;
 ;-----------------------------------------------------------------------;
 DISP_HALF_SECTOR	PROC	NEAR
-	XOR	DX,DX			;Start at beginning of sector
+	PUSH	CX
+	PUSH	DX
 	MOV	CX,16			;Display 16 lines
 HALF_SECTOR:
 	CALL	DISP_LINE
 	CALL	SEND_CRLF
 	ADD	DX,16
 	LOOP	HALF_SECTOR
-	INT	20h
+	POP	DX
+	POP	CX
+	RET
 DISP_HALF_SECTOR	ENDP
 	
 	PUBLIC	DISP_LINE
