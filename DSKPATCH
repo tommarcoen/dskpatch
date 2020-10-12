@@ -6,7 +6,10 @@ video_io.obj:	video_io.asm
 
 cursor.obj:	cursor.asm
 	masm cursor;
+	
+disk_io.obj:	disk_io.asm
+	masm disk_io;
 
-disp_sec.com: disp_sec.obj video_io.obj cursor.obj
-	link disp_sec video_io cursor;
-	exe2bin disp_sec disp_sec.com
+disp_sec.com: disk_io.obj disp_sec.obj video_io.obj cursor.obj
+	link disk_io disp_sec video_io cursor;
+	exe2bin disk_io disk_io.com
