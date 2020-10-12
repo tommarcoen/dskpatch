@@ -4,15 +4,43 @@ CGROUP	GROUP	CODE_SEG, DATA_SEG	;Group two segments together
 CODE_SEG	SEGMENT	PUBLIC
 	ORG	100h
 	
+	PUBLIC	DISP_HALF_SECTOR
+	EXTRN	SEND_CRLF:NEAR
+;-----------------------------------------------------------------------;
+; This procedure displays half a sector (256 bytes)                     ;
+;                                                                       ;
+; Uses:         DISP_LINE, SEND_CRLF                                    ;
+;-----------------------------------------------------------------------;
+DISP_HALF_SECTOR	PROC	NEAR
+	XOR	DX,DX			;Start at beginning of sector
+	MOV	CX,16			;Display 16 lines
+HALF_SECTOR:
+	CALL	DISP_LINE
+	CALL	SEND_CRLF
+	ADD	DX,16
+	LOOP	HALF_SECTOR
+	INT	20h
+DISP_HALF_SECTOR	ENDP
+	
+	PUBLIC	DISP_LINE
 	EXTRN	WRITE_HEX:NEAR
 	EXTRN	WRITE_CHAR:NEAR
 ;-----------------------------------------------------------------------;
-; This is a simple test program to dump 16 bytes of memory as hex       ;
-; numbers, all on one line.                                             ;
+; This procedure displays one line of data, or 16 bytes, first in hex,  ;
+; then in ASCII.                                                        ;
+;                                                                       ;
+;      DS:DX    Offset into sector, in bytes.                           ;
+;                                                                       ;
+; Uses:         WRITE_CHAR, WRITE_HEX                                   ;
+; Reads:        SECTOR                                                  ;
 ;-----------------------------------------------------------------------;
 DISP_LINE	PROC	NEAR
-	XOR	BX,BX			;Set BX to 0
+	PUSH	BX
+	PUSH	CX
+	PUSH	DX
+	MOV	BX,DX			;Offset is more useful in BX
 	MOV	CX,16			;Dump 16 bytes
+	PUSH	BX			;Save the offset for ASCII_LOOP
 HEX_LOOP:
 	MOV	DL,SECTOR[BX]		;Get 1 byte
 	CALL	WRITE_HEX		;Dump this byte in hex
@@ -24,14 +52,17 @@ HEX_LOOP:
 	MOV	DL,' '			;Add another space before characters
 	CALL	WRITE_CHAR
 	MOV	CX,16
-	XOR	BX,BX			;Set BX back to 0
+	POP	BX			;Get back offset into SECTOR
 ASCII_LOOP:
 	MOV	DL,SECTOR[BX]
 	CALL	WRITE_CHAR
 	INC	BX
 	LOOP	ASCII_LOOP
 	
-	INT	20h			;Return to DOS
+	POP	DX
+	POP	CX
+	POP	BX
+	RET
 DISP_LINE	ENDP
 
 CODE_SEG	ENDS
@@ -39,9 +70,23 @@ CODE_SEG	ENDS
 
 DATA_SEG	SEGMENT	PUBLIC
 	PUBLIC	SECTOR
-SECTOR	DB	10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h  ;Test pattern
-	DB	18h, 19h, 1Ah, 1Bh, 1Ch, 1Dh, 1Eh, 1Fh
+SECTOR	DB	16 DUP(10h)
+	DB	16 DUP(11h)
+	DB	16 DUP(12h)
+	DB	16 DUP(13h)
+	DB	16 DUP(14h)
+	DB	16 DUP(15h)
+	DB	16 DUP(16h)
+	DB	16 DUP(17h)
+	DB	16 DUP(18h)
+	DB	16 DUP(19h)
+	DB	16 DUP(1Ah)
+	DB	16 DUP(1Bh)
+	DB	16 DUP(1Ch)
+	DB	16 DUP(1Dh)
+	DB	16 DUP(1Eh)
+	DB	16 DUP(1Fh)
 DATA_SEG	ENDS
 
 
-	END	DISP_LINE
+	END	DISP_HALF_SECTOR
