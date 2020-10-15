@@ -1,6 +1,21 @@
 CGROUP	GROUP	CODE_SEG, DATA_SEG	;Group two segments together
 	ASSUME	CS:CGROUP, DS:CGROUP
 
+;-----------------------------------------------------------------------;
+; Graphics characters for border of sector.                             ;
+;-----------------------------------------------------------------------;
+VERTICAL_BAR	EQU	0BAh
+HORIZONTAL_BAR	EQU	0CDh
+UPPER_LEFT	EQU	0C9h
+UPPER_RIGHT	EQU	0BBh
+LOWER_LEFT	EQU	0C8h
+LOWER_RIGHT	EQU	0BCh
+TOP_T_BAR	EQU	0CBh
+BOTTOM_T_BAR	EQU	0CAh
+TOP_TICK	EQU	0D1h
+BOTTOM_TICK	EQU	0CFh
+
+
 CODE_SEG	SEGMENT	PUBLIC
 	ORG	100h
 	
