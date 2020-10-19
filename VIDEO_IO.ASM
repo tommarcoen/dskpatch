@@ -16,6 +16,25 @@ TEST_WRITE_HEX	PROC	NEAR
 	INT	20h			;Return to DOS
 TEST_WRITE_HEX	ENDP
 
+
+	PUBLIC	WRITE_CHAR_N_TIMES
+;-----------------------------------------------------------------------;
+; This procedure writes more than one copy of a character               ;
+;                                                                       ;
+;       DL      Character code                                          ;
+;       CX      Number of times to write the character                  ;
+;                                                                       ;
+; Uses:         WRITE_CHAR
+;-----------------------------------------------------------------------;
+WRITE_CHAR_N_TIMES	PROC	NEAR
+	PUSH	CX
+N_TIMES:
+	CALL	WRITE_CHAR
+	LOOP	N_TIMES
+	POP	CX
+	RET
+WRITE_CHAR_N_TIMES	ENDP
+
 	PUBLIC	WRITE_DECIMAL
 ;-----------------------------------------------------------------------;
 ; This procedure writes a 16-bit, unsigned number in decimal notation.  ;
