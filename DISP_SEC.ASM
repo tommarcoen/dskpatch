@@ -59,6 +59,15 @@ DISP_LINE	PROC	NEAR
 	PUSH	CX
 	PUSH	DX
 	MOV	BX,DX			;Offset is more useful in BX
+	MOV	DL,' '
+					;Write offset in hex
+	CMP	BX,100h			;Is the first digit a 1?
+	JB	WRITE_ONE		;No, white space already in DL
+	MOV	DL,'1'			;Yes, then place '1' into DL for output
+WRITE_ONE:
+	CALL	WRITE_CHAR
+	MOV	DL,BL			;Copy lower byte into DL for hex output
+	CALL	WRITE_HEX
 					;Write separator
 	MOV	DL,' '
 	CALL	WRITE_CHAR
