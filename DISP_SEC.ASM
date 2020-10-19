@@ -45,13 +45,14 @@ DISP_HALF_SECTOR	ENDP
 	PUBLIC	DISP_LINE
 	EXTRN	WRITE_HEX:NEAR
 	EXTRN	WRITE_CHAR:NEAR
+	EXTRN	WRITE_CHAR_N_TIMES:NEAR
 ;-----------------------------------------------------------------------;
 ; This procedure displays one line of data, or 16 bytes, first in hex,  ;
 ; then in ASCII.                                                        ;
 ;                                                                       ;
 ;      DS:DX    Offset into sector, in bytes.                           ;
 ;                                                                       ;
-; Uses:         WRITE_CHAR, WRITE_HEX                                   ;
+; Uses:         WRITE_CHAR, WRITE_HEX, WRITE_CHAR_N_TIMES               ;
 ; Reads:        SECTOR                                                  ;
 ;-----------------------------------------------------------------------;
 DISP_LINE	PROC	NEAR
@@ -60,6 +61,8 @@ DISP_LINE	PROC	NEAR
 	PUSH	DX
 	MOV	BX,DX			;Offset is more useful in BX
 	MOV	DL,' '
+	MOV	CX,3                    ;Write three spaces before line
+	CALL	WRITE_CHAR_N_TIMES
 					;Write offset in hex
 	CMP	BX,100h			;Is the first digit a 1?
 	JB	WRITE_ONE		;No, white space already in DL
