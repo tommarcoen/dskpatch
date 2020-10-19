@@ -59,6 +59,14 @@ DISP_LINE	PROC	NEAR
 	PUSH	CX
 	PUSH	DX
 	MOV	BX,DX			;Offset is more useful in BX
+					;Write separator
+	MOV	DL,' '
+	CALL	WRITE_CHAR
+	MOV	DL,VERTICAL_BAR		;Draw left side of box
+	CALL	WRITE_CHAR
+	MVO	DL,' '
+	CALL	WRITE_CHAR
+					;Now write out 16 bytes
 	MOV	CX,16			;Dump 16 bytes
 	PUSH	BX			;Save the offset for ASCII_LOOP
 HEX_LOOP:
@@ -69,6 +77,8 @@ HEX_LOOP:
 	INC	BX
 	LOOP	HEX_LOOP
 	
+	MOV	DL,VERTICAL_BAR		;Write separator
+	CALL	WRITE_CHAR
 	MOV	DL,' '			;Add another space before characters
 	CALL	WRITE_CHAR
 	MOV	CX,16
@@ -79,6 +89,10 @@ ASCII_LOOP:
 	INC	BX
 	LOOP	ASCII_LOOP
 	
+	MOV	DL,' '			;Draw right side of box
+	CALL	WRITE_CHAR
+	MOV	DL,VERTICAL_BAR
+	CALL	WRITE_CHAR
 	POP	DX
 	POP	CX
 	POP	BX
