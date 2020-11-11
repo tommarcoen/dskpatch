@@ -139,6 +139,43 @@ IS_PRINTABLE:
 	RET				;And return
 WRITE_CHAR	ENDP
 
+	PUBLIC	WRITE_PATTERN
+;-----------------------------------------------------------------------;
+; This procedure writes a line to the screen, based on data in the form ;
+;                                                                       ;
+;      DB       (character, number of times to write character), 0      ;
+; Where (x) means that x can be repeated any number of times            ;
+;      DS:DX    Address of above data statement                         ;
+;                                                                       ;
+; Uses:         WRITE_CHAR_N_TIMES                                      ;
+;-----------------------------------------------------------------------;
+WRITE_PATTERN	PROC	NEAR
+	PUSH	AX
+	PUSH	CX
+	PUSH	DX
+	PUSH	SI
+	PUSHF				;Save the direction flag
+	CLD				;Set direction flag for increment
+	MOV	SI,DX			;Move offset into SI register for LODSB
+PATTERN_LOOP:
+	LODSB				;Get character data into AL
+	OR	AL,AL			;Is it the end of data (0h)?
+	JZ	END_PATTERN		;Yes, return
+	MOV	DL,AL			;No, set up to write character N times
+	LODSB				;Get the repeat count into AL
+	MOV	CL,AL			;And put in CX for WRITE_CHAR_N_TIMES
+	XOR	CH,CH			;Zero upper byte of CX
+	CALL	WRITE_CHAR_N_TIMES
+	JMP	PATTERN_LOOP
+END_PATTERN:
+	POPF				;Restore direction flag
+	POP	SI
+	POP	DX
+	POP	CX
+	POP	AX
+	RET
+WRITE_PATTERN	ENDP
+
 CODE_SEG	ENDS
 
 	END	TEST_WRITE_DECIMAL
