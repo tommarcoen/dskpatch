@@ -18,7 +18,29 @@ BOTTOM_TICK	EQU	0CFh
 
 CODE_SEG	SEGMENT	PUBLIC
 	ORG	100h
-	
+
+	PUBLIC	INIT_SEC_DISP
+	EXTRN	WRITE_PATTERN:NEAR, SEND_CRLF:NEAR
+;-----------------------------------------------------------------------;
+; This procedure initializes the half-sector display.                   ;
+;                                                                       ;
+; Uses:         WRITE_PATTERN, SEND_CRLF, DISP_HALF_SECTOR              ;
+; Reads:        TOP_LINE_PATTERN, BOTTOM_LINE_PATTERN                   ;
+;-----------------------------------------------------------------------;
+INIT_SEC_DISP	PROC	NEAR
+	PUSH	DX
+	LEA	DX,TOP_LINE_PATTERN
+	CALL	WRITE_PATTERN
+	CALL	SEND_CRLF
+	XOR	DX,DX			;Start at the beginning of the sector
+	CALL	DISP_HALF_SECTOR
+	LEA	DX,BOTTOM_LINE_SECTOR
+	CAL	WRITE_PATTERN
+	POP	DX
+	RET
+INIT_SEC_DISP	ENDP
+
+
 	PUBLIC	DISP_HALF_SECTOR
 	EXTRN	SEND_CRLF:NEAR
 ;-----------------------------------------------------------------------;
