@@ -4,7 +4,7 @@ CGROUP	GROUP	CODE_SEG, DATA_SEG
 CODE_SEG	SEGMENT	PUBLIC
 	ORG	100h
 	
-	EXTRN	DISP_HALF_SECTOR:NEAR
+	EXTRN	INIT_SEC_DISP:NEAR
 ;-----------------------------------------------------------------------;
 ; This procedure reads the first sector on disk A and dumps the first   ;
 ; half of this sector.                                                  ;
@@ -17,7 +17,7 @@ READ_SECTOR	PROC	NEAR
 	INT	25h                     ;Read the sector
 	POPF                            ;Discard flags put on stack by DOS
 	XOR	DX,DX			;Set offset to 0 within SECTOR
-	CALL	DISP_HALF_SECTOR	;Dump the first half
+	CALL	INIT_SEC_DISP		;Dump the first half
 	INT	20h			;Return to DOS
 READ_SECTOR	ENDP
 
